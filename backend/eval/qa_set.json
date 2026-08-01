@@ -1,0 +1,50 @@
+[
+  {
+    "question": "What is Retrieval-Augmented Generation?",
+    "relevant_chunk_ids": ["6edd0a54-9887-450b-91ba-63e46039b28d"]
+  },
+  {
+    "question": "What are the steps involved when a document is uploaded to a RAG system?",
+    "relevant_chunk_ids": ["7f6ee6cc-6885-4cc3-809a-1de0095849a1"]
+  },
+  {
+    "question": "What happens when a user submits a query?",
+    "relevant_chunk_ids": ["078213d4-bb9b-4092-a71a-548d24262ee0"]
+  },
+  {
+    "question": "Why is RAG useful compared to a standard language model?",
+    "relevant_chunk_ids": ["abbd2958-bf49-41ef-a123-7c60ec52b13c"]
+  },
+  {
+    "question": "What is hybrid search?",
+    "relevant_chunk_ids": ["35d02d24-ed71-487b-8a4c-93f28a3193e9", "66fe2573-1411-4adf-b562-bee20bbc7c8d"]
+  },
+  {
+    "question": "How do you measure whether a RAG system is working well?",
+    "relevant_chunk_ids": ["04e0fbfd-0510-4ae8-b134-43d17aae2293", "5349c8c6-0e81-4759-8a01-cade7e6a2eac"]
+  },
+  {
+    "question": "What are the weaknesses of semantic search and keyword search individually?",
+    "relevant_chunk_ids": ["6a04b39c-593b-4cd8-8c7f-a48200740fe5"]
+  },
+  {
+    "question": "How does BM25 rank documents?",
+    "relevant_chunk_ids": ["ac3d138c-a50e-4396-9034-d750c8f075c9"]
+  },
+  {
+    "question": "What is the purpose of reranking in a retrieval pipeline?",
+    "relevant_chunk_ids": ["438f3bec-4d2e-41cc-a0c3-77763b5500c0"]
+  },
+  {
+    "question": "What is the first stage of a RAG pipeline?",
+    "relevant_chunk_ids": ["a88fe8da-345e-42a2-b514-64539414b9c0"]
+  },
+  {
+    "question": "What is recursive character splitting?",
+    "relevant_chunk_ids": ["e39990a9-c602-4004-a3ed-cc4219147658"]
+  },
+  {
+    "question": "Why can't you measure whether hybrid search or reranking actually helped without a labeled test set?",
+    "relevant_chunk_ids": ["5349c8c6-0e81-4759-8a01-cade7e6a2eac"]
+  }
+]
