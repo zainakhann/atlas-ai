@@ -1,13 +1,13 @@
-from sentence_transformers import CrossEncoder
+import cohere
+from app.core.config import settings
 
-_reranker = None
+_client = None
 
-
-def get_reranker():
-    global _reranker
-    if _reranker is None:
-        _reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
-    return _reranker
+def _get_client():
+    global _client
+    if _client is None:
+        _client = cohere.ClientV2(api_key=settings.cohere_api_key)
+    return _client
 
 
 def rerank(query: str, candidates: list[dict], top_k: int = 5):
@@ -15,11 +15,18 @@ def rerank(query: str, candidates: list[dict], top_k: int = 5):
     if not candidates:
         return []
 
-    model = get_reranker()
-    pairs = [[query, c["content"]] for c in candidates]
-    scores = model.predict(pairs)
+    client = _get_client()
+    documents = [c["content"] for c in candidates]
 
-    scored = list(zip(candidates, scores))
-    scored.sort(key=lambda x: x[1], reverse=True)
+    response = client.rerank(
+        model="rerank-v3.5",
+        query=query,
+        documents=documents,
+        top_n=top_k,
+    )
 
-    return [(metadata, float(score)) for metadata, score in scored[:top_k]]
+    results = []
+    for result in response.results:
+        metadata = candidates[result.index]
+        results.append((metadata, float(result.relevance_score)))
+    return results
