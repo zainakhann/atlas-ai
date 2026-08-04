@@ -30,6 +30,13 @@ def get_index():
     return _index
 
 
+def reset_index():
+    """Clears the in-memory index so it can be rebuilt from scratch (used at app startup)."""
+    global _index, _metadata
+    _index = faiss.IndexFlatIP(EMBEDDING_DIM)
+    _metadata = []
+
+
 def add_vectors(vectors: np.ndarray, metadatas: list[dict]):
     """vectors: shape (n, 768), metadatas: list of n dicts (e.g. chunk_id, document_id, content)"""
     global _metadata

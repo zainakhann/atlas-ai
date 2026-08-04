@@ -7,6 +7,8 @@ from app.models import document, conversation, user, workspace
 from app.models.document import Chunk
 from app.routes import upload, chat, conversations, workspaces, auth, summarize
 from app.services.bm25_search import build_bm25_index
+from app.services.embeddings import embed_texts
+from app.services.vector_store import reset_index, add_vectors
 
 setup_logging()
 
@@ -47,6 +49,13 @@ def build_search_indexes():
         ]
         build_bm25_index(chunk_dicts)
         logger.info(f"BM25 index built with {len(chunk_dicts)} chunks")
+
+        reset_index()
+        if chunk_dicts:
+            contents = [c["content"] for c in chunk_dicts]
+            vectors = embed_texts(contents)
+            add_vectors(vectors, chunk_dicts)
+        logger.info(f"FAISS index built with {len(chunk_dicts)} chunks (Gemini embeddings)")
     finally:
         db.close()
 

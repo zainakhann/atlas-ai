@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     groq_api_key: str = ""
     secret_key: str = "dev-secret-key-change-this-in-production"
     frontend_url: str = "http://localhost:3000"
+    gemini_api_key: str = ""
 
     class Config:
         env_file = ".env"
