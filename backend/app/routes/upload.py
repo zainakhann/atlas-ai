@@ -13,6 +13,7 @@ from app.services.summarizer import compare_documents
 
 router = APIRouter()
 UPLOAD_DIR = "data/uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post("/upload")
