@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Plus, LogOut, Home, FileText, MessageSquare, Sparkles } from "lucide-react";
 import { apiFetch, clearToken } from "@/lib/api";
 
@@ -148,7 +147,6 @@ export function Sidebar() {
         Log out
       </button>
 
-      <ThemeToggle />
-    </aside>
+      </aside>
   );
 }

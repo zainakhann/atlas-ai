@@ -102,8 +102,6 @@ def sse_event_generator(question: str, top_k: int, conversation_id: str, workspa
             for metadata, score in reranked:
                 metadata["score"] = score
                 chunks.append(metadata)
-            print(f"[DEBUG] Question: {question!r}")
-            print(f"[DEBUG] Reranked scores: {[round(s, 4) for _, s in reranked]}")
 
         chunks = _attach_filenames(chunks, db)
 
