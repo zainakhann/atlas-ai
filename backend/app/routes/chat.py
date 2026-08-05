@@ -96,6 +96,8 @@ def sse_event_generator(question: str, top_k: int, conversation_id: str, workspa
             candidates = hybrid_search(search_query, query_vec, top_k=20, candidate_k=20, allowed_document_ids=document_ids)
             candidate_chunks = [metadata for metadata, score in candidates]
             reranked = rerank(search_query, candidate_chunks, top_k=top_k)
+            print(f"[DEBUG] Question: {question!r}")
+            print(f"[DEBUG] Reranked scores: {[round(s, 4) for _, s in reranked]}")
             chunks = []
             for metadata, score in reranked:
                 metadata["score"] = score
