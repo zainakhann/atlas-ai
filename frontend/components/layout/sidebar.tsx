@@ -26,7 +26,7 @@ interface ConversationSummary {
   title: string;
 }
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [newIds, setNewIds] = useState<Set<string>>(new Set());
   const seenIdsRef = useRef<Set<string> | null>(null);
@@ -71,7 +71,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-card p-4">
+    <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-background p-4 md:bg-card">
       <div className="mb-6 flex items-center gap-2">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
           <circle cx="12" cy="12" r="2.2" fill="#3B82F6" />
@@ -89,6 +89,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => onNavigate?.()}
               className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                 active
                   ? "border border-blue-500/30 bg-blue-500/10 text-foreground"
@@ -103,7 +104,10 @@ export function Sidebar() {
       </nav>
 
       <button
-        onClick={() => router.push("/dashboard")}
+        onClick={() => {
+          router.push("/dashboard");
+          onNavigate?.();
+        }}
         className="mt-4 flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-foreground hover:bg-muted"
       >
         <Plus className="h-3.5 w-3.5" />
@@ -117,6 +121,7 @@ export function Sidebar() {
             <Link
               key={c.id}
               href={`/dashboard/chat?conversation=${c.id}`}
+              onClick={() => onNavigate?.()}
               className="flex items-center gap-2 truncate rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted"
             >
               <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />
