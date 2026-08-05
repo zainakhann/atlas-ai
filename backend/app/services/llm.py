@@ -5,10 +5,9 @@ MODEL_NAME = "llama-3.3-70b-versatile"
 
 client = Groq(api_key=settings.groq_api_key)
 
-RELEVANCE_THRESHOLD = -2.0  # rewritten follow-up queries (e.g. "in detail") score lower than direct
-                             # questions even when correct (~-0.8 to -1) — 1.0 was too strict and broke
-                             # follow-ups; -2.0 still filters clear noise like greetings (~-6 to -11)
-                             # while preserving legitimate rewritten-query matches
+RELEVANCE_THRESHOLD = -0.5  # tightened after adding a second document — with more chunks in the pool,
+                              # -2.0 let irrelevant chunks pass on greetings/off-topic messages, causing
+                              # stray citations on answers that correctly said "I don't have information"
 
 SYSTEM_PROMPT = """You are Atlas, a helpful assistant for answering questions about the user's uploaded documents.
 

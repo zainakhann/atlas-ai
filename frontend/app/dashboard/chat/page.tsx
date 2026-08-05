@@ -84,6 +84,19 @@ function ChatPageInner({ urlConversationId }: { urlConversationId: string | null
 
   const hasAutoTriggeredRef = useRef(false);
 
+  const fetchDocsWithRetry = async (attempts = 4, delayMs = 3000): Promise<any[]> => {
+    for (let i = 0; i < attempts; i++) {
+      try {
+        const res = await apiFetch("/documents");
+        if (res.ok) return await res.json();
+      } catch {
+        // fall through to retry
+      }
+      if (i < attempts - 1) await new Promise((r) => setTimeout(r, delayMs));
+    }
+    return [];
+  };
+
   useEffect(() => {
     if (hasAutoTriggeredRef.current) return;
     hasAutoTriggeredRef.current = true;
@@ -95,13 +108,21 @@ function ChatPageInner({ urlConversationId }: { urlConversationId: string | null
     if (prefill) {
       handleSend(decodeURIComponent(prefill));
     } else if (analyze && docId) {
-      apiFetch(`/documents`)
-        .then((res) => (res.ok ? res.json() : []))
-        .then((docs) => {
-          const doc = docs.find((d: { id: string }) => d.id === docId);
-          if (doc) handleAnalyze(doc, analyze);
-        })
-        .catch(() => {});
+      fetchDocsWithRetry().then((docs) => {
+        const doc = docs.find((d: { id: string }) => d.id === docId);
+        if (doc) {
+          handleAnalyze(doc, analyze);
+        } else {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: crypto.randomUUID(),
+              role: "assistant",
+              content: "The server took too long to respond (it may have been waking up). Please try again.",
+            },
+          ]);
+        }
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
