@@ -5,9 +5,9 @@ MODEL_NAME = "llama-3.3-70b-versatile"
 
 client = Groq(api_key=settings.groq_api_key)
 
-RELEVANCE_THRESHOLD = -0.5  # tightened after adding a second document — with more chunks in the pool,
-                              # -2.0 let irrelevant chunks pass on greetings/off-topic messages, causing
-                              # stray citations on answers that correctly said "I don't have information"
+RELEVANCE_THRESHOLD = 0.1  # set from real Cohere rerank scores (0-1 scale, not the old cross-encoder's
+                             # raw logit scale): greetings scored 0.02-0.06 max, genuine document matches
+                             # scored 0.25-0.63 — 0.1 sits cleanly between the two with real margin
 
 SYSTEM_PROMPT = """You are Atlas, a helpful assistant for answering questions about the user's uploaded documents.
 
@@ -24,8 +24,12 @@ def _filter_relevant(context_chunks: list[dict]) -> list[dict]:
     if not context_chunks:
         return []
     if "score" not in context_chunks[0]:
+        print(f"[DEBUG] _filter_relevant: no 'score' key found, skipping filter entirely. Sample chunk keys: {list(context_chunks[0].keys())}")
         return context_chunks
-    return [c for c in context_chunks if c["score"] >= RELEVANCE_THRESHOLD]
+    before = len(context_chunks)
+    result = [c for c in context_chunks if c["score"] >= RELEVANCE_THRESHOLD]
+    print(f"[DEBUG] _filter_relevant: threshold={RELEVANCE_THRESHOLD}, before={before}, after={len(result)}, scores={[round(c['score'], 4) for c in context_chunks]}")
+    return result
 
 
 CLASSIFY_PROMPT = """Classify the message below as exactly one word: GREETING or QUESTION.
