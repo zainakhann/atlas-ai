@@ -9,6 +9,7 @@ interface DocumentItem {
   filename: string;
   status: string;
   chunk_count: number;
+  deletable: boolean;
 }
 
 export default function DashboardPage() {
@@ -126,13 +127,15 @@ export default function DashboardPage() {
             {doc.status === "failed" && (
               <XCircle className="h-4 w-4 shrink-0 text-red-500" />
             )}
-            <button
-              onClick={() => deleteDocument(doc.id)}
-              className="text-muted-foreground transition-colors hover:text-red-500"
-              title="Delete document"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+            {doc.deletable && (
+              <button
+                onClick={() => deleteDocument(doc.id)}
+                className="text-muted-foreground transition-colors hover:text-red-500"
+                title="Delete document"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            )}
           </div>
         ))}
       </div>

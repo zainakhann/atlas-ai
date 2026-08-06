@@ -11,9 +11,21 @@ from app.models.document import Document, Chunk
 from app.services.document_processor import extract_pages, clean_text, chunk_text
 from app.services.summarizer import compare_documents
 
+from app.models.user import User
+
 router = APIRouter()
 UPLOAD_DIR = "data/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+DEMO_EMAIL = "demo@atlasai.local"
+PROTECTED_DEMO_FILENAME = "octopus_intelligence.pdf"
+
+
+def _is_protected_demo_doc(document: Document, user_id: str, db: Session) -> bool:
+    if document.filename != PROTECTED_DEMO_FILENAME:
+        return False
+    user = db.query(User).filter(User.id == user_id).first()
+    return user is not None and user.email == DEMO_EMAIL
 
 
 @router.post("/upload")
@@ -77,6 +89,7 @@ def list_documents(db: Session = Depends(get_db), user_id: str = Depends(get_cur
             "filename": doc.filename,
             "status": doc.status,
             "chunk_count": chunk_count,
+            "deletable": not _is_protected_demo_doc(doc, user_id, db),
         })
     return results
 
@@ -88,6 +101,9 @@ def delete_document(document_id: str, db: Session = Depends(get_db), user_id: st
     document = db.query(Document).filter(Document.id == document_id, Document.user_id == user_id).first()
     if not document:
         raise HTTPException(404, "Document not found")
+
+    if _is_protected_demo_doc(document, user_id, db):
+        raise HTTPException(403, "This is the demo document and can't be deleted")
 
     file_path = os.path.join(UPLOAD_DIR, document.filename)
     if os.path.exists(file_path):
