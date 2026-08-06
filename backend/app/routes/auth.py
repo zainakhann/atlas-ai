@@ -67,7 +67,9 @@ def _reset_demo_account(user_id: str, db: Session):
     for doc in stray_docs:
         db.delete(doc)
 
-    db.query(Conversation).filter(Conversation.user_id == user_id).delete()
+    stray_conversations = db.query(Conversation).filter(Conversation.user_id == user_id).all()
+    for conv in stray_conversations:
+        db.delete(conv)
     db.commit()
 
     all_chunks = db.query(Chunk).all()
