@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { FileText, ListFilter, HelpCircle, Sparkles, Clock, ShieldCheck, ArrowUp, ArrowRight, MessageSquare, LogOut, User } from "lucide-react";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, isDemoAccount } from "@/lib/api";
 import { DocumentPickerModal } from "@/components/chat/document-picker-modal";
 
 interface DocumentItem {
@@ -40,10 +40,12 @@ export default function HomePage() {
       .then((docs: DocumentItem[]) => setDocumentCount(docs.filter((d) => d.status === "ready").length))
       .catch(() => setDocumentCount(0));
 
-    apiFetch("/conversations")
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data: ConversationSummary[]) => setRecent(data.slice(0, 4)))
-      .catch(() => setRecent([]));
+    if (!isDemoAccount()) {
+      apiFetch("/conversations")
+        .then((res) => (res.ok ? res.json() : []))
+        .then((data: ConversationSummary[]) => setRecent(data.slice(0, 4)))
+        .catch(() => setRecent([]));
+    }
   }, []);
 
   useEffect(() => {
