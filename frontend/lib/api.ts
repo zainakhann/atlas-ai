@@ -11,6 +11,17 @@ export function setToken(token: string) {
 
 export function clearToken() {
   localStorage.removeItem("atlas_token");
+  localStorage.removeItem("atlas_is_demo");
+}
+
+export function setIsDemo(value: boolean) {
+  if (value) localStorage.setItem("atlas_is_demo", "true");
+  else localStorage.removeItem("atlas_is_demo");
+}
+
+export function isDemoAccount(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem("atlas_is_demo") === "true";
 }
 
 export function notifyConversationsChanged() {

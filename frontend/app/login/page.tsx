@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { API_URL, setToken } from "@/lib/api";
+import { API_URL, setToken, setIsDemo } from "@/lib/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -23,6 +23,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error("Demo is temporarily unavailable");
       const data = await res.json();
       setToken(data.access_token);
+      setIsDemo(true);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Demo is temporarily unavailable");
@@ -47,6 +48,7 @@ export default function LoginPage() {
       }
       const data = await res.json();
       setToken(data.access_token);
+      setIsDemo(false);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

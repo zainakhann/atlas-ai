@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { API_URL, setToken } from "@/lib/api";
+import { API_URL, setToken, setIsDemo } from "@/lib/api";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -27,6 +27,7 @@ export default function RegisterPage() {
       }
       const data = await res.json();
       setToken(data.access_token);
+      setIsDemo(false);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");

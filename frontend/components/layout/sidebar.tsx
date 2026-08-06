@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Plus, LogOut, Home, FileText, MessageSquare, Sparkles } from "lucide-react";
-import { apiFetch, clearToken } from "@/lib/api";
+import { apiFetch, clearToken, isDemoAccount } from "@/lib/api";
 
 function TypewriterText({ text }: { text: string }) {
   const [displayed, setDisplayed] = useState("");
@@ -34,6 +34,10 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
   const router = useRouter();
 
   const loadConversations = useCallback(() => {
+    if (isDemoAccount()) {
+      setConversations([]);
+      return;
+    }
     apiFetch("/conversations")
       .then((res) => (res.ok ? res.json() : []))
       .then((data: ConversationSummary[]) => {
