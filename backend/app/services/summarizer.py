@@ -1,7 +1,7 @@
 from groq import Groq
 from app.core.config import settings
 
-MODEL_NAME = "llama-3.3-70b-versatile"
+MODEL_NAME = "openai/gpt-oss-120b"
 
 client = Groq(api_key=settings.groq_api_key)
 
@@ -37,7 +37,7 @@ def _summarize_chunk(chunk_content: str) -> str:
         model=MODEL_NAME,
         messages=[{"role": "user", "content": MAP_PROMPT.format(chunk=chunk_content)}],
     )
-    return response.choices[0].message.content.strip()
+    return (response.choices[0].message.content or "").strip()
 
 
 def map_reduce_summarize(chunk_contents: list[str]) -> str:
@@ -54,7 +54,7 @@ def map_reduce_summarize(chunk_contents: list[str]) -> str:
         model=MODEL_NAME,
         messages=[{"role": "user", "content": REDUCE_PROMPT.format(summaries=combined)}],
     )
-    return response.choices[0].message.content.strip()
+    return (response.choices[0].message.content or "").strip()
 
 
 ANALYZE_PROMPTS = {
@@ -93,7 +93,7 @@ def analyze_document(mode: str, chunk_contents: list[str]) -> str:
         model=MODEL_NAME,
         messages=[{"role": "user", "content": prompt}],
     )
-    return response.choices[0].message.content.strip()
+    return (response.choices[0].message.content or "").strip()
 
 
 def compare_documents(name_a: str, summary_a: str, name_b: str, summary_b: str) -> str:
@@ -102,4 +102,4 @@ def compare_documents(name_a: str, summary_a: str, name_b: str, summary_b: str) 
         model=MODEL_NAME,
         messages=[{"role": "user", "content": prompt}],
     )
-    return response.choices[0].message.content.strip()
+    return (response.choices[0].message.content or "").strip()
